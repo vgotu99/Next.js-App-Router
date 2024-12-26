@@ -1,26 +1,43 @@
-"use client"
+"use client";
 
-import { useRouter } from "next/navigation"; // 페이지 라우터와 달리 앱 라우터 방식의 Next.js 앱에서는 "next/navigation" 으로부터 useRouter를 불러와야한다.
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import style from "./serachbar.module.css";
 
-const Searchbar = () => {
+export default function Searchbar() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [search, setSearch] = useState("");
-  const router = useRouter()
+
+  const q = searchParams.get("q");
+
+  useEffect(() => {
+    setSearch(q || "");
+  }, [q]);
 
   const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
 
   const onSubmit = () => {
-    router.push(`/search?q=${search}`)
-  }
+    if (!search || q === search) return;
+    router.push(`/search?q=${search}`);
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      onSubmit();
+    }
+  };
 
   return (
-    <div>
-      <input value={search} onChange={onChangeSearch} type="text" />
+    <div className={style.container}>
+      <input
+        value={search}
+        onChange={onChangeSearch}
+        onKeyDown={onKeyDown}
+      />
       <button onClick={onSubmit}>검색</button>
     </div>
   );
-};
-
-export default Searchbar;
+}

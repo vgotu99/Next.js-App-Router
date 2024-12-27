@@ -3,7 +3,9 @@ import style from "./page.module.css";
 import { BookData } from "@/types";
 
 const AllBooks = async () => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`, {
+    cache: "no-store", // cache: "no-store" 옵션: 캐싱x
+  }); // fetch의 기본값은 캐싱x이다.
   const allBooks: BookData[] = await res.json();
 
   if (!res.ok) return <div>오류가 발생했습니다...</div>;
@@ -18,7 +20,9 @@ const AllBooks = async () => {
 
 const RecommendBooks = async () => {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/random`
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/random`,
+    // { cache: "force-cache" } // cache: "force-cache" 옵션: 캐싱o
+    { next: { revalidate: 3 } } // next: { revalidate: 3 } 옵션: 캐싱o, n초마다 캐시 업데이트(PageRouter의 ISR과 유사함)
   );
   const recommendBooks: BookData[] = await res.json();
 

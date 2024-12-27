@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import style from "./page.module.css";
 
-// export const dynamicParams = false; // generateStaticParams에 명시해주지 않은 경로로의 요청은 모두 404 상태를 띄워주는 옵션
+// export const dynamicParams = false; // generateStaticParams에 명시해주지 않은 경로로의 요청은 모두 404 상태를 띄워주는 라우트 세그먼트 옵션
 
 export const generateStaticParams = () => {
   return [{ id: "1" }, { id: "2" }, { id: "3" }];

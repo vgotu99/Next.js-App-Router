@@ -3,7 +3,9 @@ import Link from "next/link";
 import style from "./layout.module.css";
 
 const Footer = async () => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`);
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER_URL}/book`, {
+    cache: "force-cache",
+  });
 
   const books = await res.json();
   const bookCount = books.length;

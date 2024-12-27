@@ -6,7 +6,7 @@ import style from "./serachbar.module.css";
 
 export default function Searchbar() {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams(); // useSearchParams 훅은 비동기로 동작함
   const [search, setSearch] = useState("");
 
   const q = searchParams.get("q");

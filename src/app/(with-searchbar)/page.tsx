@@ -2,6 +2,7 @@ import BookItem from "@/components/book-item";
 import style from "./page.module.css";
 import { BookData } from "@/types";
 import { Suspense } from "react";
+import BookListSkeleton from "@/components/skeleton/book-list-skeleton";
 
 // export const dynamic = "auto";
 // // 특정 페이지의 유형을 강제로 Static 혹은 Dynamic 페이지로 설정하는 라우트 세그먼트 옵션 => 사용을 권장하지는 않는다.
@@ -53,14 +54,22 @@ export default function Home() {
     <div className={style.container}>
       <section>
         <h3>지금 추천하는 도서</h3>
-        <Suspense fallback={<div>도서를 불러오는 중입니다...</div>}>
-        {/* React의 Suspense 컴포넌트를 이용하면 병렬로 완료되는 순서대로 화면에 렌더링되도록 할 수 있다. */}
+        <Suspense
+          fallback={
+            <BookListSkeleton count={3} />
+          }
+        >
+          {/* React의 Suspense 컴포넌트를 이용하면 병렬로 완료되는 순서대로 화면에 렌더링되도록 할 수 있다. */}
           <RecommendBooks />
         </Suspense>
       </section>
       <section>
         <h3>등록된 모든 도서</h3>
-        <Suspense fallback={<div>도서를 불러오는 중입니다...</div>}>
+        <Suspense
+          fallback={
+            <BookListSkeleton count={10} />
+          }
+        >
           <AllBooks />
         </Suspense>
       </section>

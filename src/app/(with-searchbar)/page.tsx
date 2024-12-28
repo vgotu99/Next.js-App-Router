@@ -29,22 +29,27 @@ const AllBooks = async () => {
 };
 
 const RecommendBooks = async () => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/random`,
-    // { cache: "force-cache" } // cache: "force-cache" 옵션: 캐싱o
-    { next: { revalidate: 3 } } // next: { revalidate: 3 } 옵션: 캐싱o, n초마다 캐시 업데이트(PageRouter의 ISR과 유사함)
-    // 데이터 캐시 과정에 revalidate 옵션을 사용할 경우 해당 주기 마다 풀 라우트 캐시 전체가 업데이트 된다!
-  );
-  const recommendBooks: BookData[] = await res.json();
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_SERVER_URL}/book/random`,
+      // { cache: "force-cache" } // cache: "force-cache" 옵션: 캐싱o
+      { next: { revalidate: 3 } } // next: { revalidate: 3 } 옵션: 캐싱o, n초마다 캐시 업데이트(PageRouter의 ISR과 유사함)
+      // 데이터 캐시 과정에 revalidate 옵션을 사용할 경우 해당 주기 마다 풀 라우트 캐시 전체가 업데이트 된다!
+    );
+    const recommendBooks: BookData[] = await res.json();
 
-  if (!res.ok) return <div>오류가 발생했습니다...</div>;
-  return (
-    <>
-      {recommendBooks.map((book) => (
-        <BookItem key={book.id} {...book} />
-      ))}
-    </>
-  );
+    if (!res.ok) return <div>오류가 발생했습니다...</div>;
+    return (
+      <>
+        {recommendBooks.map((book) => (
+          <BookItem key={book.id} {...book} />
+        ))}
+      </>
+    );
+  } catch (error) {
+    console.error(error);
+    return <div>ERROR</div>
+  }
 };
 
 export const dynamic = "force-dynamic";
@@ -54,22 +59,14 @@ export default function Home() {
     <div className={style.container}>
       <section>
         <h3>지금 추천하는 도서</h3>
-        <Suspense
-          fallback={
-            <BookListSkeleton count={3} />
-          }
-        >
+        <Suspense fallback={<BookListSkeleton count={3} />}>
           {/* React의 Suspense 컴포넌트를 이용하면 병렬로 완료되는 순서대로 화면에 렌더링되도록 할 수 있다. */}
           <RecommendBooks />
         </Suspense>
       </section>
       <section>
         <h3>등록된 모든 도서</h3>
-        <Suspense
-          fallback={
-            <BookListSkeleton count={10} />
-          }
-        >
+        <Suspense fallback={<BookListSkeleton count={10} />}>
           <AllBooks />
         </Suspense>
       </section>
